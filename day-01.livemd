@@ -1,19 +1,22 @@
-# Advent of Code 2022
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 1: Calorie Counting
 
 ```elixir
-data =
-  File.read!("day-1.data")
-  |> String.split("\n\n")
-  |> Enum.map(fn elf_data ->
-    elf_data
-    |> String.trim()
-    |> String.split("\n")
-    |> Enum.map(&String.to_integer/1)
-    |> Enum.sum()
-  end)
+Mix.install(nimble_parsec: "~> 1.2")
+
+import ExUnit.Assertions, only: [assert: 1]
+
+input = Path.join(__DIR__, "day-1.data") |> File.read!()
 ```
 
-## Day 1: Calorie Counting
+<!-- livebook:{"output":true} -->
+
+```
+"9524\n12618\n6755\n2121\n12876\n11330\n\n4029\n11446\n11571\n2683\n3454\n12411\n\n6226\n9901\n6735\n7602\n4045\n4643\n5047\n2329\n\n5576\n23361\n16052\n\n5523\n12113\n3128\n5978\n4683\n3458\n\n32135\n15179\n\n7380\n9715\n5985\n9547\n9207\n6882\n4407\n1688\n\n9175\n4868\n3374\n6053\n5304\n4585\n1344\n5036\n\n4807\n1180\n6655\n4572\n3864\n4674\n6759\n6861\n4273\n2387\n1085\n1598\n\n1807\n13594\n13712\n7385\n\n6607\n6858\n3872\n5554\n5802\n1174\n5234\n6082\n6672\n4180\n1491\n4111\n1721\n\n6508\n4569\n2836\n7992\n2876\n4464\n5023\n2920\n3794\n6274\n\n3229\n2998\n15582\n12963\n14718\n\n32390\n\n2517\n6446\n6777\n5881\n7923\n5523\n4904\n3018\n5737\n4826\n\n5911\n6152\n2479\n3949\n3427\n5924\n6432\n6746\n6878\n5884\n3309\n3674\n2026\n\n11177\n1872\n15245\n16212\n6512\n\n23534\n21079\n\n5725\n8219\n7284\n1011\n1903\n2835\n\n3194\n3712\n5969\n6069\n4264\n4616\n5424\n5382\n4772\n1908\n1707\n2222\n2778\n3712\n\n10329\n26374\n\n4180\n3086\n5044\n1980\n5636\n2776\n5399\n3898\n1353\n4864\n5504\n5631\n3373\n\n11290\n1294\n2117\n13739\n9724\n11236\n\n9653\n13620\n20041\n8914\n\n29248\n32773\n\n2316\n3761\n4458\n4592\n5963\n2118\n6079\n2024\n3928\n4745\n2965\n1748\n2824\n5740\n5189\n\n1307\n5004\n2336\n7721\n1757\n5155\n4671\n2734\n4884\n5549\n\n16255\n\n4892\n4077\n1163\n7588\n\n4887\n4197\n3782\n5889\n6735\n5729\n2783\n3170\n3062\n6874\n5479\n\n4352\n3701\n5794\n4775\n1622\n2128\n1063\n1009\n1702\n4405\n4455\n1304\n5133\n1374\n2677\n\n6261\n1307\n5579\n6582\n6098\n5375\n4876\n4747\n3285\n6389\n2660\n\n68718\n\n3578\n5102\n3755\n2031\n6961\n6433\n6081\n2957\n1770\n1280\n4229\n7081\n\n9388\n11343\n5178\n2164\n10275\n6054\n5742\n\n8550\n7983\n8330\n8883\n9575\n9300\n8453\n6367\n5770\n\n5374\n5460\n5590\n6433\n5785\n3128\n1194\n5369\n3032\n6351\n2210\n4725\n2942\n5483\n\n28182\n\n36912\n27721\n\n15006\n4561\n2828\n\n2120\n4019\n4685\n1360\n4315\n2733\n1546\n3986\n3071\n4308\n6705\n1480\n2075\n\n4452\n7034\n6770\n8934\n8125\n6333\n2856\n7908\n5145\n\n2068\n1714\n6972\n5061\n6633\n4180\n5603\n5186\n6986\n3112\n5696\n\n1164\n4408\n7118\n7230\n1636\n5958\n2070\n2091\n3158\n6631\n\n6888\n5446\n3132\n1888\n2668\n1529\n1568\n1901\n4708\n2815\n8079\n\n2394\n1604\n6133\n1886\n2648\n3636\n2998\n5510\n1422\n5184\n3436\n6317\n3481\n3109\n\n13992\n8555\n\n3038\n5447\n5010\n10502\n9033\n4127\n9385\n7438\n\n5561\n14448\n15742\n9477\n15244\n\n1824\n7913\n3167\n2770\n6853\n5049\n8970\n3980\n3792\n\n5263\n1495\n6398\n3191\n1787\n4516\n4528\n1984\n2209\n2937\n1917\n\n7093\n4995\n11710\n8145\n2509\n11002\n2329\n\n2772\n9223\n7429\n5951\n5211\n5390\n9636\n5015\n9576\n\n9143\n19336\n8940\n14860\n\n1615\n2033\n1853\n3334\n10998\n5591\n10429\n\n3400\n6270\n6159\n1199\n6841\n1411\n2272\n2298\n8236\n\n2641\n9002\n8338\n13253\n9830\n\n2121\n6314\n5463\n\n16712\n\n20041\n15769\n6691\n8310\n\n17869\n15266\n3313\n\n3453\n4166\n6214\n4735\n6756\n7020\n4624\n4679\n1779\n3429\n1133\n4630\n\n2207\n16017\n2824\n13752\n6355\n\n13493\n12177\n9701\n1146\n2421\n\n6461\n5774\n5822\n5873\n7594\n7653\n6871\n7934\n6083\n4111\n7399\n\n14561\n4204\n17338\n9054\n\n5551\n2880\n4587\n7339\n7793\n8194\n5359\n8702\n6846\n\n4827\n6451\n2666\n7916\n2321\n2258\n\n7352\n\n17612\n30650\n\n13845\n9073\n7678\n15430\n3256\n\n13079\n12502\n8332\n12919\n\n15980\n14653\n5439\n2880\n15145\n\n26007\n\n18376\n8663\n11423\n7152\n\n3832\n5843\n3919\n5658\n1615\n5840\n3009\n5725\n2639\n5239\n4380\n2298\n4618\n2586\n\n15785\n8518\n4131\n8614\n\n4718\n5897\n7178\n2031\n3409\n7218\n6794\n8699\n4119\n6928\n\n2129\n2231\n2489\n5616\n1467\n2225\n5657\n4127\n6286\n5359\n4725\n1819\n5550\n\n6079\n7050\n13912\n13912\n12870\n4966\n\n5974\n3386\n2793\n4898\n2975\n3865\n5974\n3655\n3838\n1822\n3322\n1610\n5610\n3243\n\n4090\n1110\n4663\n2618\n1587\n3417\n4401\n3837\n2593\n4503\n1746\n4797\n1821\n3502\n2592\n\n4955\n4020\n13061\n7532\n12446\n\n4084\n1491\n5988\n6646\n2061\n2083\n1761\n5146\n4656\n5620\n3959\n6133\n3161\n\n9795\n2854\n6539\n1197\n7913\n6560\n1912\n5636\n\n3964\n6541\n3226\n3536\n6335\n6956\n3656\n4149\n6859\n4609\n4456\n2856\n3395\n\n16002\n11740\n6583\n\n8056\n21295\n6331\n\n12521\n14781\n2837\n18442\n\n7673\n12780\n3682\n\n2104\n2166\n4813\n\n5722\n5243\n3506\n4961\n3587\n5584\n8571\n6724\n6901\n5278\n\n3464\n4099\n2514\n6217\n2209\n6501\n5950\n3218\n4821\n3121\n4106\n4451\n1228\n\n5147\n5877\n1170\n4801\n4153\n3710\n1673\n5553\n5992\n5173\n4277\n1451\n5158\n3766\n3191\n\n12693\n13232\n5554\n12330\n7602\n6490\n\n1168\n14381\n11380\n6522\n4822\n\n3956\n12204\n1708\n13838\n7704\n5066\n\n5436\n3448\n4345\n7430\n6934\n1717\n4553\n4683\n7091\n5718\n4289\n1140\n\n2321\n1291\n2159\n7409\n3502\n4266\n2190\n5307\n1971\n2217\n\n8168\n4475\n7287\n9416\n6264\n2691\n4551\n5109\n3286\n\n31132\n31889\n\n6154\n6665\n7026\n11383\n13857\n8357\n\n10312\n3810\n7818\n6172\n7615\n9201\n1937\n\n9067\n6897\n4655\n5091\n2824\n7062\n1336\n1835\n3831\n\n4839\n5218\n6044\n4868\n6466\n4237\n2814\n2210\n3365\n6128\n2713\n5229\n4600\n1466\n\n1225\n5350\n3013\n1102\n7614\n3002\n4451\n2059\n1843\n6" <> ...
+```
+
+## Part 1
 
 Santa's reindeer typically eat regular reindeer food, but they need a lot of [magical energy](https://adventofcode.com/2018/day/25) to deliver presents on Christmas. For that, their favorite snack is a special type of *star* fruit that only grows deep in the jungle. The Elves have brought you on their annual expedition to the grove where the fruit grows.
 
@@ -25,9 +28,36 @@ The jungle must be too overgrown and difficult to navigate in vehicles or access
 
 The Elves take turns writing down the number of Calories contained by the various meals, snacks, rations, etc. that they've brought with them, one item per line. Each Elf separates their own inventory from the previous Elf's inventory (if any) by a blank line.
 
-For example, suppose the Elves finish writing their items' Calories and end up with the following list:
+```elixir
+defmodule Calories do
+  import NimbleParsec
+
+  number = integer(min: 1) |> ignore(string("\n"))
+  inventory = number |> times(min: 1) |> reduce({Enum, :sum, []})
+
+  separator = ignore(string("\n"))
+
+  list = choice([inventory, separator]) |> repeat()
+
+  defparsecp(:parse, list)
+
+  def parse!(input) do
+    {:ok, data, "", _, _, _} = parse(input)
+    data
+  end
+end
+```
+
+<!-- livebook:{"output":true} -->
 
 ```
+{:module, Calories, <<70, 79, 82, 49, 0, 0, 26, ...>>, {:parse!, 1}}
+```
+
+For example, suppose the Elves finish writing their items' Calories and end up with the following list:
+
+```elixir
+sample_input = """
 1000
 2000
 3000
@@ -42,6 +72,13 @@ For example, suppose the Elves finish writing their items' Calories and end up w
 9000
 
 10000
+"""
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+"1000\n2000\n3000\n\n4000\n\n5000\n6000\n\n7000\n8000\n9000\n\n10000\n"
 ```
 
 This list represents the Calories of the food carried by five Elves:
@@ -52,12 +89,28 @@ This list represents the Calories of the food carried by five Elves:
 * The fourth Elf is carrying food with `7000`, `8000`, and `9000` Calories, a total of **`24000`** Calories.
 * The fifth Elf is carrying one food item with **`10000`** Calories.
 
+```elixir
+assert Calories.parse!(sample_input) == [6000, 4000, 11000, 24000, 10000]
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+true
+```
+
 In case the Elves get hungry and need extra snacks, they need to know which Elf to ask: they'd like to know how many Calories are being carried by the Elf carrying the **most** Calories. In the example above, this is **`24000`** (carried by the fourth Elf).
 
 Find the Elf carrying the most Calories. **How many total Calories is that Elf carrying?**
 
 ```elixir
-data |> Enum.max()
+input |> Calories.parse!() |> Enum.max()
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+73211
 ```
 
 ## Part Two
@@ -71,5 +124,15 @@ In the example above, the top three Elves are the fourth Elf (with `24000` Calor
 Find the top three Elves carrying the most Calories. **How many Calories are those Elves carrying in total?**
 
 ```elixir
-data |> Enum.sort(&>/2) |> Enum.take(3) |> Enum.sum()
+input
+|> Calories.parse!()
+|> Enum.sort(&>/2)
+|> Enum.take(3)
+|> Enum.sum()
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+213958
 ```
