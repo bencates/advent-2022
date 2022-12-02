@@ -7,7 +7,7 @@ Mix.install(nimble_parsec: "~> 1.2")
 
 import ExUnit.Assertions, only: [assert: 1]
 
-input = Path.join(__DIR__, "day-1.data") |> File.read!()
+input = Path.join(__DIR__, "day-01.data") |> File.read!()
 ```
 
 <!-- livebook:{"output":true} -->
@@ -32,14 +32,14 @@ The Elves take turns writing down the number of Calories contained by the variou
 defmodule Calories do
   import NimbleParsec
 
-  number = integer(min: 1) |> ignore(string("\n"))
-  inventory = number |> times(min: 1) |> reduce({Enum, :sum, []})
+  calorie_count = integer(min: 1) |> ignore(string("\n"))
+  total_calories = calorie_count |> times(min: 1) |> reduce({Enum, :sum, []})
 
-  separator = ignore(string("\n"))
+  blank_line = ignore(string("\n"))
 
-  list = choice([inventory, separator]) |> repeat()
+  data = choice([total_calories, blank_line]) |> repeat()
 
-  defparsecp(:parse, list)
+  defparsecp(:parse, data)
 
   def parse!(input) do
     {:ok, data, "", _, _, _} = parse(input)
