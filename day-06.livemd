@@ -32,23 +32,21 @@ The device will send your subroutine a datastream buffer (your puzzle input); yo
 
 ```elixir
 defmodule CommSystem do
-  def start_of_packet(buffer), do: marker(buffer, 4)
-  def start_of_message(buffer), do: marker(buffer, 14)
+  def start_of_packet(buffer), do: marked_index(buffer, 4)
+  def start_of_message(buffer), do: marked_index(buffer, 14)
 
-  defp marker(buffer, width) when is_binary(buffer),
+  defp marked_index(buffer, width) when is_binary(buffer),
     do: marker(String.to_charlist(buffer), width)
 
-  defp marker(buffer, width) do
-    {potential_marker, buffer} = Enum.split(buffer, width)
-    buffer = Enum.with_index(buffer, width)
+  defp marked_index(buffer, width) do
+    buffer
+    |> Enum.chunk_every(width, 1, :discard)
+    |> Enum.find_index(&marker?/1)
+    |> Kernel.+(width)
+  end
 
-    Enum.reduce_while(buffer, potential_marker, fn {char, idx}, potential_marker ->
-      if potential_marker |> Enum.uniq() |> length() == width do
-        {:halt, idx}
-      else
-        {:cont, tl(potential_marker) ++ [char]}
-      end
-    end)
+  defp marker?(potential_marker) do
+    potential_marker |> Enum.uniq() |> length() == potential_marker |> length()
   end
 end
 ```
@@ -56,7 +54,7 @@ end
 <!-- livebook:{"output":true} -->
 
 ```
-{:module, CommSystem, <<70, 79, 82, 49, 0, 0, 11, ...>>, {:marker, 2}}
+{:module, CommSystem, <<70, 79, 82, 49, 0, 0, 9, ...>>, {:marker?, 1}}
 ```
 
 For example, suppose you receive the following datastream buffer:
@@ -100,7 +98,7 @@ ExUnit.run()
 Finished in 0.00 seconds (0.00s async, 0.00s sync)
 5 tests, 0 failures
 
-Randomized with seed 64227
+Randomized with seed 754403
 ```
 
 <!-- livebook:{"output":true} -->
@@ -164,7 +162,7 @@ ExUnit.run()
 Finished in 0.00 seconds (0.00s async, 0.00s sync)
 5 tests, 0 failures
 
-Randomized with seed 64227
+Randomized with seed 754403
 ```
 
 <!-- livebook:{"output":true} -->
